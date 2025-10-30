@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Management - TranMinhNam23021646</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .wallet-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .wallet-info h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .info-value {
+            color: #333;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .connect-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .connect-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .approve-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .approve-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: monospace;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .approved-list {
+            margin-top: 30px;
+        }
+
+        .approved-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #27ae60;
+        }
+
+        .approved-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .approved-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .approved-address {
+            font-family: monospace;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .approved-amount {
+            color: #27ae60;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .transaction {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.2s;
+        }
+
+        .transaction:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .transaction.sent {
+            border-left-color: #e74c3c;
+        }
+
+        .transaction.received {
+            border-left-color: #27ae60;
+        }
+
+        .transaction.approved {
+            border-left-color: #f39c12;
+        }
+
+        .tx-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tx-type {
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .tx-type.sent {
+            background: #ffebee;
+            color: #e74c3c;
+        }
+
+        .tx-type.received {
+            background: #e8f5e9;
+            color: #27ae60;
+        }
+
+        .tx-type.approved {
+            background: #fff3cd;
+            color: #f39c12;
+        }
+
+        .tx-amount {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .tx-details {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .tx-details div {
+            margin-bottom: 5px;
+        }
+
+        .tx-hash {
+            font-family: monospace;
+            font-size: 0.85em;
+            color: #667eea;
+            cursor: pointer;
+        }
+
+        .tx-hash:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 1.1em;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tx-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .tx-note {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            border-left: 3px solid #ffc107;
+        }
+
+        .btn-small {
+            padding: 6px 15px;
+            font-size: 0.85em;
+            border-radius: 5px;
+        }
+
+        .tx-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🪙 Quản Lý Token TMN</h1>
+            <p>TranMinhNam23021646 Token - ERC20</p>
+        </div>
+
+        <div class="content">
+            <div id="walletSection">
+                <button class="connect-btn" id="connectBtn">Kết nối MetaMask</button>
+            </div>
+
+            <div id="mainSection" style="display: none;">
+                <div class="wallet-info">
+                    <h2>📊 Thông tin tài khoản</h2>
+                    <div class="info-row">
+                        <span class="info-label">Địa chỉ ví:</span>
+                        <span class="info-value" id="walletAddress">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Network:</span>
+                        <span class="info-value" id="networkName">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Số dư ETH:</span>
+                        <span class="info-value" id="ethBalance">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Số dư TMN:</span>
+                        <span class="info-value" id="tokenBalance">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Contract Address:</span>
+                        <span class="info-value" id="contractAddress">-</span>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" data-tab="buy">💰 Mua Token</button>
+                    <button class="tab" data-tab="approve">🔐 Phê duyệt (Approve)</button>
+                    <button class="tab" data-tab="history">📜 Lịch sử giao dịch</button>
+                    <button class="tab" data-tab="approved-list">📋 Danh sách đã phê duyệt</button>
+                </div>
+
+                <!-- Buy Token Tab -->
+                <div id="tab-buy" class="tab-content active">
+                    <div class="approve-section">
+                        <h3>💰 Mua TMN Token bằng ETH</h3>
+                        <p style="margin-bottom: 20px; color: #666;">
+                            Gửi ETH để mua TMN token theo tỷ giá hiện tại
+                        </p>
+                        
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <h4 style="margin-bottom: 10px; color: #1976d2;">📊 Thông tin giá</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <div style="font-size: 0.9em; color: #666;">Tỷ giá hiện tại:</div>
+                                    <div style="font-size: 1.3em; font-weight: bold; color: #1976d2;" id="tokenPrice">
+                                        Đang tải...
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9em; color: #666;">Tổng ETH đã bán:</div>
+                                    <div style="font-size: 1.3em; font-weight: bold; color: #27ae60;" id="totalEthRaised">
+                                        Đang tải...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>💵 Số lượng ETH muốn gửi:</label>
+                            <input type="number" step="0.001" class="form-input" id="buyEthAmount" placeholder="VD: 0.01">
+                            <div style="font-size: 0.85em; color: #666; margin-top: 5px;">
+                                Bạn sẽ nhận: <span id="estimatedTokens" style="font-weight: bold; color: #667eea;">0 TMN</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>🪙 Hoặc nhập số TMN muốn mua:</label>
+                            <input type="number" class="form-input" id="buyTokenAmount" placeholder="VD: 1000">
+                            <div style="font-size: 0.85em; color: #666; margin-top: 5px;">
+                                Chi phí: <span id="estimatedEth" style="font-weight: bold; color: #667eea;">0 ETH</span>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-success" id="buyTokenBtn">🛒 Mua Token</button>
+                        </div>
+
+                        <div id="buyMessage" style="margin-top: 20px;"></div>
+
+                        <!-- Owner controls (chỉ hiện khi user là owner) -->
+                        <div id="ownerControls" style="display: none; margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 10px;">
+                            <h4 style="color: #856404; margin-bottom: 15px;">⚙️ Quản lý (Chỉ Owner)</h4>
+                            
+                            <div class="form-group">
+                                <label>💲 Đặt giá mới (1 ETH = ? TMN):</label>
+                                <input type="number" class="form-input" id="newPrice" placeholder="VD: 2000">
+                            </div>
+                            <button class="btn" id="setPriceBtn" style="background: #ffc107; color: #000;">Cập nhật giá</button>
+                            
+                            <button class="btn btn-danger" id="withdrawEthBtn" style="margin-top: 15px;">
+                                💸 Rút ETH về ví Owner
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-approve" class="tab-content"
+                    <div class="approve-section">
+                        <h3>🔐 Phê duyệt địa chỉ chi tiêu token</h3>
+                        <p style="margin-bottom: 20px; color: #666;">
+                            Cho phép một địa chỉ khác được quyền chi tiêu token của bạn (dùng cho transferFrom)
+                        </p>
+                        
+                        <div class="form-group">
+                            <label>📝 Tên gợi nhớ (nickname):</label>
+                            <input type="text" class="form-input" id="approveName" placeholder="VD: Ví của bạn An">
+                        </div>
+
+                        <div class="form-group">
+                            <label>📍 Địa chỉ được phê duyệt:</label>
+                            <input type="text" class="form-input" id="approveAddress" placeholder="0x...">
+                        </div>
+
+                        <div class="form-group">
+                            <label>💰 Số lượng token cho phép:</label>
+                            <input type="number" class="form-input" id="approveAmount" placeholder="VD: 1000">
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-success" id="approveBtn">✅ Phê duyệt</button>
+                            <button class="btn btn-danger" id="revokeBtn">❌ Thu hồi phê duyệt</button>
+                        </div>
+
+                        <div id="approveMessage" style="margin-top: 20px;"></div>
+                        
+                        <!-- Transfer trực tiếp từ ví hiện tại -->
+                        <hr style="margin:20px 0;" />
+                        <h4>👉 Gửi TMN (transfer)</h4>
+                        <div class="form-group">
+                            <label>📍 Đến (to):</label>
+                            <input type="text" class="form-input" id="transferTo" placeholder="0x...">
+                        </div>
+                        <div class="form-group">
+                            <label>💰 Số lượng TMN:</label>
+                            <input type="number" class="form-input" id="transferAmount" placeholder="VD: 100">
+                        </div>
+                        <div class="btn-group" style="margin-bottom: 10px;">
+                            <button class="btn btn-primary" id="transferBtn">🚀 Gửi</button>
+                        </div>
+
+                        <!-- TransferFrom: current account acts as spender -->
+                        <hr style="margin:20px 0;" />
+                        <h4>🔁 TransferFrom (dùng allowance)</h4>
+                        <div class="form-group">
+                            <label>🧾 Từ (owner):</label>
+                            <input type="text" class="form-input" id="tfFrom" placeholder="Địa chỉ chủ sở hữu (owner)">
+                        </div>
+                        <div class="form-group">
+                            <label>📍 Đến (to):</label>
+                            <input type="text" class="form-input" id="tfTo" placeholder="Địa chỉ nhận">
+                        </div>
+                        <div class="form-group">
+                            <label>💰 Số lượng TMN:</label>
+                            <input type="number" class="form-input" id="tfAmount" placeholder="VD: 50">
+                        </div>
+                        <div class="btn-group" style="margin-bottom: 10px;">
+                            <button class="btn btn-primary" id="transferFromBtn">🔁 Thực hiện transferFrom</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-history" class="tab-content">
+                    <div class="search-box">
+                        <input type="text" class="form-input" id="searchAddress" placeholder="Nhập địa chỉ để tra cứu (để trống = ví hiện tại)">
+                        <button class="btn" id="searchBtn">🔍 Tra cứu</button>
+                    </div>
+
+                    <div class="btn-group" style="margin-bottom: 20px;">
+                        <button class="btn" onclick="filterByTag()">🏷️ Lọc theo tag</button>
+                        <button class="btn" onclick="document.getElementById('searchBtn').click()">🔄 Hiển thị tất cả</button>
+                        <button class="btn" onclick="exportHistory()">📥 Xuất CSV</button>
+                    </div>
+
+                    <div id="statsSection" style="display: none;" class="stats">
+                        <div class="stat-card">
+                            <h4>Tổng giao dịch</h4>
+                            <div class="value" id="totalTx">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Đã gửi</h4>
+                            <div class="value" id="sentTx">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Đã nhận</h4>
+                            <div class="value" id="receivedTx">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Đã phê duyệt</h4>
+                            <div class="value" id="approvedTx">0</div>
+                        </div>
+                    </div>
+
+                    <div id="historyContent">
+                        <div class="no-data">
+                            Nhấn "Tra cứu" để xem lịch sử giao dịch
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-approved-list" class="tab-content">
+                    <h3 style="margin-bottom: 20px;">📋 Danh sách địa chỉ đã phê duyệt</h3>
+                    <div id="approvedListContent">
+                        <div class="no-data">
+                            Chưa có địa chỉ nào được phê duyệt
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+            
+            const TOKEN_ABI = [
+                "function name() view returns (string)",
+                "function symbol() view returns (string)",
+                "function balanceOf(address) view returns (uint256)",
+                "function transfer(address to, uint256 amount) returns (bool)",
+                "function approve(address spender, uint256 amount) returns (bool)",
+                "function allowance(address owner, address spender) view returns (uint256)",
+                "function transferFrom(address from, address to, uint256 amount) returns (bool)",
+                "function buyTokens() payable",
+                "function tokenPrice() view returns (uint256)",
+                "function totalEthRaised() view returns (uint256)",
+                "function calculateTokenAmount(uint256 ethAmount) view returns (uint256)",
+                "function calculateEthCost(uint256 tokenAmount) view returns (uint256)",
+                "function setTokenPrice(uint256 newPrice)",
+                "function withdrawEth()",
+                "function owner() view returns (address)",
+                "event Transfer(address indexed from, address indexed to, uint256 value)",
+                "event Approval(address indexed owner, address indexed spender, uint256 value)",
+                "event TokensPurchased(address indexed buyer, uint256 ethAmount, uint256 tokenAmount)"
+            ];
+
+            let provider;
+            let signer;
+            let contract;
+            let currentAccount;
+            let approvedAddresses = {};
+
+            let txMetadata = {}; // Lưu notes, tags cho từng transaction
+
+            function loadTxMetadata() {
+                const stored = localStorage.getItem('txMetadata_' + currentAccount);
+                if (stored) {
+                    txMetadata = JSON.parse(stored);
+                }
+            }
+
+            function saveTxMetadata() {
+                localStorage.setItem('txMetadata_' + currentAccount, JSON.stringify(txMetadata));
+            }
+
+            // Load approved addresses from storage
+            function loadApprovedAddresses() {
+                const stored = localStorage.getItem('approvedAddresses_' + currentAccount);
+                if (stored) {
+                    approvedAddresses = JSON.parse(stored);
+                }
+            }
+
+            function saveApprovedAddresses() {
+                localStorage.setItem('approvedAddresses_' + currentAccount, JSON.stringify(approvedAddresses));
+            }
+
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    const tabId = 'tab-' + tab.dataset.tab;
+                    document.getElementById(tabId).classList.add('active');
+
+                    if (tab.dataset.tab === 'approved-list') {
+                        displayApprovedList();
+                    }
+                });
+            });
+
+            // Connect MetaMask
+            document.getElementById('connectBtn').addEventListener('click', async () => {
+                try {
+                    if (typeof window.ethereum === 'undefined') {
+                        alert('❌ Vui lòng cài đặt MetaMask!');
+                        return;
+                    }
+
+                    const accounts = await window.ethereum.request({ 
+                        method: 'eth_requestAccounts' 
+                    });
+                    
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    signer = provider.getSigner();
+                    currentAccount = await signer.getAddress();
+                    
+                    const network = await provider.getNetwork();
+                    
+                    if (network.chainId !== 31337) {
+                        alert('⚠️ Vui lòng chuyển sang mạng Hardhat Local (Chain ID: 31337)');
+                        return;
+                    }
+                    
+                    contract = new ethers.Contract(CONTRACT_ADDRESS, TOKEN_ABI, signer);
+                    
+                    loadApprovedAddresses();
+                    loadTxMetadata();
+                    await displayWalletInfo();
+                    await loadBuyTokenInfo();
+                    
+                    document.getElementById('walletSection').style.display = 'none';
+                    document.getElementById('mainSection').style.display = 'block';
+
+                } catch (error) {
+                    console.error('Connection error:', error);
+                    alert('❌ Không thể kết nối: ' + error.message);
+                }
+            });
+
+            async function displayWalletInfo() {
+                try {
+                    const ethBalance = await provider.getBalance(currentAccount);
+                    const ethFormatted = ethers.utils.formatEther(ethBalance);
+
+                    const network = await provider.getNetwork();
+                    const networkName = network.chainId === 31337 ? 'Hardhat Local (localhost:8545)' : network.name;
+
+                    let tokenBalance;
+                    let tokenFormatted = 'N/A';
+                    try {
+                        tokenBalance = await contract.balanceOf(currentAccount);
+                        tokenFormatted = ethers.utils.formatEther(tokenBalance);
+                    } catch (err) {
+                        console.error('Error getting token balance:', err);
+                        tokenFormatted = 'Contract không tồn tại';
+                    }
+
+                    document.getElementById('walletAddress').textContent = currentAccount;
+                    document.getElementById('networkName').textContent = networkName;
+                    document.getElementById('ethBalance').textContent = parseFloat(ethFormatted).toFixed(4) + ' ETH';
+                    document.getElementById('tokenBalance').textContent = 
+                        typeof tokenFormatted === 'string' && tokenFormatted.includes('không') 
+                            ? tokenFormatted 
+                            : parseFloat(tokenFormatted).toFixed(2) + ' TMN';
+                    document.getElementById('contractAddress').textContent = CONTRACT_ADDRESS;
+
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+
+            // ========== BUY TOKEN FUNCTIONALITY ==========
+            async function loadBuyTokenInfo() {
+                try {
+                    const price = await contract.tokenPrice();
+                    const raised = await contract.totalEthRaised();
+                    const contractOwner = await contract.owner();
+
+                    document.getElementById('tokenPrice').textContent = `1 ETH = ${price.toString()} TMN`;
+                    document.getElementById('totalEthRaised').textContent = ethers.utils.formatEther(raised) + ' ETH';
+
+                    // Show owner controls if current user is owner
+                    if (contractOwner.toLowerCase() === currentAccount.toLowerCase()) {
+                        document.getElementById('ownerControls').style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error loading buy info:', error);
+                }
+            }
+
+            // Calculate tokens when ETH input changes
+            document.getElementById('buyEthAmount').addEventListener('input', async (e) => {
+                const ethAmount = e.target.value;
+                if (!ethAmount || parseFloat(ethAmount) <= 0) {
+                    document.getElementById('estimatedTokens').textContent = '0 TMN';
+                    return;
+                }
+
+                try {
+                    const ethWei = ethers.utils.parseEther(ethAmount);
+                    const tokenAmount = await contract.calculateTokenAmount(ethWei);
+                    const formatted = ethers.utils.formatEther(tokenAmount);
+                    document.getElementById('estimatedTokens').textContent = parseFloat(formatted).toFixed(2) + ' TMN';
+                } catch (error) {
+                    document.getElementById('estimatedTokens').textContent = 'Lỗi tính toán';
+                }
+            });
+
+            // Calculate ETH when token input changes
+            document.getElementById('buyTokenAmount').addEventListener('input', async (e) => {
+                const tokenAmount = e.target.value;
+                if (!tokenAmount || parseFloat(tokenAmount) <= 0) {
+                    document.getElementById('estimatedEth').textContent = '0 ETH';
+                    return;
+                }
+
+                try {
+                    const tokenWei = ethers.utils.parseEther(tokenAmount);
+                    const ethCost = await contract.calculateEthCost(tokenWei);
+                    const formatted = ethers.utils.formatEther(ethCost);
+                    document.getElementById('estimatedEth').textContent = parseFloat(formatted).toFixed(6) + ' ETH';
+                } catch (error) {
+                    document.getElementById('estimatedEth').textContent = 'Lỗi tính toán';
+                }
+            });
+
+            // Buy token button
+            document.getElementById('buyTokenBtn').addEventListener('click', async () => {
+                const ethAmount = document.getElementById('buyEthAmount').value.trim();
+                const tokenAmount = document.getElementById('buyTokenAmount').value.trim();
+                const messageDiv = document.getElementById('buyMessage');
+
+                let ethToSend;
+                
+                if (ethAmount && parseFloat(ethAmount) > 0) {
+                    ethToSend = ethers.utils.parseEther(ethAmount);
+                } else if (tokenAmount && parseFloat(tokenAmount) > 0) {
+                    try {
+                        const tokenWei = ethers.utils.parseEther(tokenAmount);
+                        ethToSend = await contract.calculateEthCost(tokenWei);
+                    } catch (error) {
+                        messageDiv.innerHTML = '<div class="error">❌ Lỗi tính toán chi phí!</div>';
+                        return;
+                    }
+                } else {
+                    messageDiv.innerHTML = '<div class="error">❌ Vui lòng nhập số ETH hoặc số TMN!</div>';
+                    return;
+                }
+
+                try {
+                    messageDiv.innerHTML = '<div class="loading">⏳ Đang gửi giao dịch mua token...</div>';
+                    
+                    const tx = await contract.buyTokens({ value: ethToSend });
+                    
+                    messageDiv.innerHTML = '<div class="loading">⏳ Đang chờ xác nhận...</div>';
+                    const receipt = await tx.wait();
+
+                    // Get event data
+                    const event = receipt.events?.find(e => e.event === 'TokensPurchased');
+                    const tokensBought = event ? ethers.utils.formatEther(event.args.tokenAmount) : 'N/A';
+
+                    messageDiv.innerHTML = `<div class="success">✅ Mua thành công ${parseFloat(tokensBought).toFixed(2)} TMN!</div>`;
+                    
+                    document.getElementById('buyEthAmount').value = '';
+                    document.getElementById('buyTokenAmount').value = '';
+                    document.getElementById('estimatedTokens').textContent = '0 TMN';
+                    document.getElementById('estimatedEth').textContent = '0 ETH';
+
+                    await displayWalletInfo();
+                    await loadBuyTokenInfo();
+
+                } catch (error) {
+                    console.error('Buy error:', error);
+                    messageDiv.innerHTML = '<div class="error">❌ Lỗi: ' + error.message + '</div>';
+                }
+            });
+
+            // Set price button (owner only)
+            document.getElementById('setPriceBtn').addEventListener('click', async () => {
+                const newPrice = document.getElementById('newPrice').value.trim();
+                const messageDiv = document.getElementById('buyMessage');
+
+                if (!newPrice || parseFloat(newPrice) <= 0) {
+                    messageDiv.innerHTML = '<div class="error">❌ Vui lòng nhập giá hợp lệ!</div>';
+                    return;
+                }
+
+                try {
+                    messageDiv.innerHTML = '<div class="loading">⏳ Đang cập nhật giá...</div>';
+                    
+                    const tx = await contract.setTokenPrice(newPrice);
+                    await tx.wait();
+
+                    messageDiv.innerHTML = `<div class="success">✅ Đã cập nhật giá: 1 ETH = ${newPrice} TMN</div>`;
+                    document.getElementById('newPrice').value = '';
+                    await loadBuyTokenInfo();
+
+                } catch (error) {
+                    console.error('Set price error:', error);
+                    messageDiv.innerHTML = '<div class="error">❌ Lỗi: ' + error.message + '</div>';
+                }
+            });
+
+            // Withdraw ETH button (owner only)
+            document.getElementById('withdrawEthBtn').addEventListener('click', async () => {
+                const messageDiv = document.getElementById('buyMessage');
+
+                if (!confirm('Bạn có chắc muốn rút toàn bộ ETH về ví?')) return;
+
+                try {
+                    messageDiv.innerHTML = '<div class="loading">⏳ Đang rút ETH...</div>';
+                    
+                    const tx = await contract.withdrawEth();
+                    await tx.wait();
+
+                    messageDiv.innerHTML = '<div class="success">✅ Đã rút ETH thành công!</div>';
+                    await displayWalletInfo();
+                    await loadBuyTokenInfo();
+
+                } catch (error) {
+                    console.error('Withdraw error:', error);
+                    messageDiv.innerHTML = '<div class="error">❌ Lỗi: ' + error.message + '</div>';
+                }
+            });
+
+            // Approve functionality
+            document.getElementById('approveBtn').addEventListener('click', async () => {
+                const name = document.getElementById('approveName').value.trim();
+                const address = document.getElementById('approveAddress').value.trim();
+                const amount = document.getElementById('approveAmount').value.trim();
+                const messageDiv = document.getElementById('approveMessage');
+
+                if (!name || !address || !amount) {
+                    messageDiv.innerHTML = '<div class="error">❌ Vui lòng điền đầy đủ thông tin!</div>';
+                    return;
+                }
+
+                if (!ethers.utils.isAddress(address)) {
+                    messageDiv.innerHTML = '<div class="error">❌ Địa chỉ không hợp lệ!</div>';
+                    return;
+                }
+
+                try {
+                    messageDiv.innerHTML = '<div class="loading">⏳ Đang gửi giao dịch approve...</div>';
+                    
+                    const amountWei = ethers.utils.parseEther(amount);
+                    const tx = await contract.approve(address, amountWei);
+                    
+                    messageDiv.innerHTML = '<div class="loading">⏳ Đang chờ xác nhận...</div>';
+                    await tx.wait();
+
+                    approvedAddresses[address] = {
+                        name: name,
+                        amount: amount,
+                        timestamp: Date.now()
+                    };
+                    saveApprovedAddresses();
+
+                    messageDiv.innerHTML = '<div class="success">✅ Phê duyệt thành công! ' + amount + ' TMN cho ' + name + '</div>';
+                    
+                    document.getElementById('approveName').value = '';
+                    document.getElementById('approveAddress').value = '';
+                    document.getElementById('approveAmount').value = '';
+
+                } catch (error) {
+                    console.error('Approve error:', error);
+                    messageDiv.innerHTML = '<div class="error">❌ Lỗi: ' + error.message + '</div>';
+                }
+            });
+
+            // Revoke approval
+            document.getElementById('revokeBtn').addEventListener('click', async () => {
+                const address = document.getElementById('approveAddress').value.trim();
+                const messageDiv = document.getElementById('approveMessage');
+
+                if (!address) {
+                    messageDiv.innerHTML = '<div class="error">❌ Vui lòng nhập địa chỉ cần thu hồi!</div>';
+                    return;
+                }
+
+                if (!ethers.utils.isAddress(address)) {
+                    messageDiv.innerHTML = '<div class="error">❌ Địa chỉ không hợp lệ!</div>';
+                    return;
+                }
+
+                try {
+                    messageDiv.innerHTML = '<div class="loading">⏳ Đang thu hồi phê duyệt...</div>';
+                    
+                    const tx = await contract.approve(address, 0);
+                    await tx.wait();
+
+                    delete approvedAddresses[address];
+                    saveApprovedAddresses();
+
+                    messageDiv.innerHTML = '<div class="success">✅ Đã thu hồi phê duyệt!</div>';
+                    document.getElementById('approveAddress').value = '';
+
+                } catch (error) {
+                    console.error('Revoke error:', error);
+                    messageDiv.innerHTML = '<div class="error">❌ Lỗi: ' + error.message + '</div>';
+                }
+            });
+
+            // Transfer (from current account)
+            document.getElementById('transferBtn').addEventListener('click', async () => {
+                const to = document.getElementById('transferTo').value.trim();
+                const amount = document.getElementById('transferAmount').value.trim();
+                const messageDiv = document.getElementById('approveMessage');
+
+                if (!to || !amount) {
+                    messageDiv.innerHTML = '<div class="error">❌ Vui lòng nhập địa chỉ và số lượng!</div>';
+                    return;
+                }
+
+                if (!ethers.utils.isAddress(to)) {
+                    messageDiv.innerHTML = '<div class="error">❌ Địa chỉ người nhận không hợp lệ!</div>';
+                    return;
+                }
+
+                try {
+                    messageDiv.innerHTML = '<div class="loading">⏳ Đang gửi transaction...</div>';
+                    const amountWei = ethers.utils.parseEther(amount.toString());
+                    const tx = await contract.connect(signer).transfer(to, amountWei);
+                    await tx.wait();
+
+                    messageDiv.innerHTML = `<div class="success">✅ Gửi ${amount} TMN tới ${to} thành công!</div>`;
+                    document.getElementById('transferTo').value = '';
+                    document.getElementById('transferAmount').value = '';
+
+                    // Refresh UI
+                    try { await displayApprovedList(); } catch (e) { /* ignore */ }
+                    try { await displayWalletInfo(); } catch (e) { /* ignore */ }
+                    try { document.getElementById('searchBtn').click(); } catch (e) { /* ignore */ }
+
+                } catch (error) {
+                    console.error('Transfer error:', error);
+                    messageDiv.innerHTML = '<div class="error">❌ Lỗi gửi: ' + error.message + '</div>';
+                }
+            });
+
+            // TransferFrom (current account acts as spender)
+            document.getElementById('transferFromBtn').addEventListener('click', async () => {
+                const owner = document.getElementById('tfFrom').value.trim();
+                const to = document.getElementById('tfTo').value.trim();
+                const amount = document.getElementById('tfAmount').value.trim();
+                const messageDiv = document.getElementById('approveMessage');
+
+                if (!owner || !to || !amount) {
+                    messageDiv.innerHTML = '<div class="error">❌ Vui lòng nhập đầy đủ owner, to và số lượng!</div>';
+                    return;
+                }
+
+                if (!ethers.utils.isAddress(owner) || !ethers.utils.isAddress(to)) {
+                    messageDiv.innerHTML = '<div class="error">❌ Một trong các địa chỉ không hợp lệ!</div>';
+                    return;
+                }
+
+                try {
+                    messageDiv.innerHTML = '<div class="loading">⏳ Gọi transferFrom...</div>';
+                    const amountWei = ethers.utils.parseEther(amount.toString());
+                    const tx = await contract.connect(signer).transferFrom(owner, to, amountWei);
+                    await tx.wait();
+
+                    messageDiv.innerHTML = `<div class="success">✅ transferFrom thành công: ${amount} TMN từ ${owner} → ${to}</div>`;
+                    document.getElementById('tfFrom').value = '';
+                    document.getElementById('tfTo').value = '';
+                    document.getElementById('tfAmount').value = '';
+
+                    // Refresh allowances and history
+                    try { await displayApprovedList(); } catch (e) { /* ignore */ }
+                    try { await displayWalletInfo(); } catch (e) { /* ignore */ }
+                    try { document.getElementById('searchBtn').click(); } catch (e) { /* ignore */ }
+
+                } catch (error) {
+                    console.error('transferFrom error:', error);
+                    messageDiv.innerHTML = '<div class="error">❌ Lỗi transferFrom: ' + error.message + '</div>';
+                }
+            });
+
+            async function displayApprovedList() {
+                const content = document.getElementById('approvedListContent');
+                
+                if (Object.keys(approvedAddresses).length === 0) {
+                    content.innerHTML = '<div class="no-data">Chưa có địa chỉ nào được phê duyệt</div>';
+                    return;
+                }
+
+                content.innerHTML = '<div class="loading">⏳ Đang tải...</div>';
+
+                try {
+                    const items = await Promise.all(
+                        Object.entries(approvedAddresses).map(async ([address, data]) => {
+                            // Lấy allowance hiện tại
+                            const currentAllowance = await contract.allowance(currentAccount, address);
+                            const currentAllowanceFormatted = ethers.utils.formatEther(currentAllowance);
+                            
+                            // Tính số đã chi tiêu
+                            const approvedAmount = parseFloat(data.amount);
+                            const remainingAmount = parseFloat(currentAllowanceFormatted);
+                            const spentAmount = approvedAmount - remainingAmount;
+                            const spentPercentage = ((spentAmount / approvedAmount) * 100).toFixed(1);
+
+                            return `
+                                <div class="approved-item">
+                                    <div class="approved-header">
+                                        <div class="approved-name">${data.name}</div>
+                                        <div class="approved-amount">${remainingAmount.toFixed(2)} TMN còn lại</div>
+                                    </div>
+                                    <div class="approved-address">${address}</div>
+                                    
+                                    <!-- Thêm phần thống kê chi tiêu -->
+                                    <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 10px;">
+                                            <div>
+                                                <div style="font-size: 0.85em; color: #999;">Đã phê duyệt</div>
+                                                <div style="font-size: 1.2em; font-weight: bold; color: #667eea;">${approvedAmount.toFixed(2)} TMN</div>
+                                            </div>
+                                            <div>
+                                                <div style="font-size: 0.85em; color: #999;">Đã chi tiêu</div>
+                                                <div style="font-size: 1.2em; font-weight: bold; color: #e74c3c;">${spentAmount.toFixed(2)} TMN</div>
+                                            </div>
+                                            <div>
+                                                <div style="font-size: 0.85em; color: #999;">Còn lại</div>
+                                                <div style="font-size: 1.2em; font-weight: bold; color: #27ae60;">${remainingAmount.toFixed(2)} TMN</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Progress bar -->
+                                        <div style="margin-top: 10px;">
+                                            <div style="display: flex; justify-content: space-between; font-size: 0.85em; color: #666; margin-bottom: 5px;">
+                                                <span>Tiến độ chi tiêu</span>
+                                                <span>${spentPercentage}%</span>
+                                            </div>
+                                            <div style="height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
+                                                <div style="height: 100%; width: ${spentPercentage}%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="font-size: 0.85em; color: #999; margin-top: 10px;">
+                                        Phê duyệt lúc: ${new Date(data.timestamp).toLocaleString('vi-VN')}
+                                    </div>
+                                    
+                                    <!-- Nút hành động -->
+                                    <div class="btn-group" style="margin-top: 15px;">
+                                        <button class="btn btn-success" style="font-size: 0.9em; padding: 8px 20px;" onclick="reApprove('${address}', '${data.name}')">
+                                            ➕ Phê duyệt thêm
+                                        </button>
+                                        <button class="btn btn-danger" style="font-size: 0.9em; padding: 8px 20px;" onclick="revokeApproval('${address}', '${data.name}')">
+                                            ❌ Thu hồi
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        })
+                    );
+
+                    content.innerHTML = items.join('');
+
+                } catch (error) {
+                    console.error('Error loading approved list:', error);
+                    content.innerHTML = '<div class="error">❌ Lỗi: ' + error.message + '</div>';
+                }
+            }
+
+            // Search transaction history
+            document.getElementById('searchBtn').addEventListener('click', async () => {
+                let targetAddress = document.getElementById('searchAddress').value.trim();
+                
+                if (!targetAddress) {
+                    targetAddress = currentAccount;
+                }
+
+                if (!ethers.utils.isAddress(targetAddress)) {
+                    alert('❌ Địa chỉ không hợp lệ!');
+                    return;
+                }
+
+                await loadTransactionHistory(targetAddress);
+            });
+
+            async function loadTransactionHistory(address) {
+                const historyContent = document.getElementById('historyContent');
+                historyContent.innerHTML = '<div class="loading">⏳ Đang tải lịch sử...</div>';
+
+                try {
+                    const transferFilter = contract.filters.Transfer();
+                    const approvalFilter = contract.filters.Approval();
+                    
+                    const [transferEvents, approvalEvents] = await Promise.all([
+                        contract.queryFilter(transferFilter, 0, 'latest'),
+                        contract.queryFilter(approvalFilter, 0, 'latest')
+                    ]);
+
+                    const relevantTransfers = transferEvents.filter(event => 
+                        event.args.from.toLowerCase() === address.toLowerCase() ||
+                        event.args.to.toLowerCase() === address.toLowerCase()
+                    );
+
+                    const relevantApprovals = approvalEvents.filter(event =>
+                        event.args.owner.toLowerCase() === address.toLowerCase()
+                    );
+
+                    if (relevantTransfers.length === 0 && relevantApprovals.length === 0) {
+                        historyContent.innerHTML = '<div class="no-data">❌ Không có giao dịch nào</div>';
+                        document.getElementById('statsSection').style.display = 'none';
+                        return;
+                    }
+
+                    const sentTxs = relevantTransfers.filter(tx => 
+                        tx.args.from.toLowerCase() === address.toLowerCase()
+                    );
+                    const receivedTxs = relevantTransfers.filter(tx => 
+                        tx.args.to.toLowerCase() === address.toLowerCase()
+                    );
+
+                    document.getElementById('totalTx').textContent = relevantTransfers.length + relevantApprovals.length;
+                    document.getElementById('sentTx').textContent = sentTxs.length;
+                    document.getElementById('receivedTx').textContent = receivedTxs.length;
+                    document.getElementById('approvedTx').textContent = relevantApprovals.length;
+                    document.getElementById('statsSection').style.display = 'grid';
+
+                    // Combine and sort all events
+                    const allEvents = [
+                        ...relevantTransfers.map(e => ({...e, type: 'transfer'})),
+                        ...relevantApprovals.map(e => ({...e, type: 'approval'}))
+                    ].sort((a, b) => b.blockNumber - a.blockNumber);
+
+                    const txsHtml = await Promise.all(
+                        allEvents.map(async (event) => {
+                            const block = await provider.getBlock(event.blockNumber);
+                            const date = new Date(block.timestamp * 1000);
+
+                            if (event.type === 'transfer') {
+                                const isSent = event.args.from.toLowerCase() === address.toLowerCase();
+                                const amount = ethers.utils.formatEther(event.args.value);
+                                const txHash = event.transactionHash;
+                                const metadata = txMetadata[txHash] || { note: '', tags: [] };
+
+                                return `
+                                    <div class="transaction ${isSent ? 'sent' : 'received'}" id="tx-${txHash}">
+                                        <div class="tx-header">
+                                            <span class="tx-type ${isSent ? 'sent' : 'received'}">
+                                                ${isSent ? '📤 Đã gửi' : '📥 Đã nhận'}
+                                            </span>
+                                            <span class="tx-amount">${parseFloat(amount).toFixed(2)} TMN</span>
+                                        </div>
+                                        <div class="tx-details">
+                                            <div><strong>Từ:</strong> ${event.args.from}</div>
+                                            <div><strong>Đến:</strong> ${event.args.to}</div>
+                                            <div><strong>Thời gian:</strong> ${date.toLocaleString('vi-VN')}</div>
+                                            <div><strong>Block:</strong> ${event.blockNumber}</div>
+                                            <div><strong>TX Hash:</strong> <span class="tx-hash" onclick="copyToClipboard('${txHash}')">${txHash}</span></div>
+                                        </div>
+                                        
+                                        ${metadata.note ? `<div class="tx-note">📝 Ghi chú: ${metadata.note}</div>` : ''}
+                                        
+                                        ${metadata.tags && metadata.tags.length > 0 ? `
+                                            <div class="tx-tags">
+                                                ${metadata.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                                            </div>
+                                        ` : ''}
+                                        
+                                        <div class="tx-actions">
+                                            <button class="btn btn-small" onclick="addNote('${txHash}')">📝 Ghi chú</button>
+                                            <button class="btn btn-small" onclick="addTag('${txHash}')">🏷️ Thêm tag</button>
+                                            <button class="btn btn-small btn-danger" onclick="deleteMetadata('${txHash}')">🗑️ Xóa metadata</button>
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                const amount = ethers.utils.formatEther(event.args.value);
+                                const spenderName = approvedAddresses[event.args.spender] ? 
+                                    approvedAddresses[event.args.spender].name : 'Không rõ';
+
+                                return `
+                                    <div class="transaction approved">
+                                        <div class="tx-header">
+                                            <span class="tx-type approved">
+                                                🔐 Đã phê duyệt
+                                            </span>
+                                            <span class="tx-amount">${parseFloat(amount).toFixed(2)} TMN</span>
+                                        </div>
+                                        <div class="tx-details">
+                                            <div><strong>Người phê duyệt:</strong> ${event.args.owner}</div>
+                                            <div><strong>Người được phê duyệt:</strong> ${event.args.spender}</div>
+                                            <div><strong>Tên:</strong> ${spenderName}</div>
+                                            <div><strong>Thời gian:</strong> ${date.toLocaleString('vi-VN')}</div>
+                                            <div><strong>Block:</strong> ${event.blockNumber}</div>
+                                            <div><strong>TX Hash:</strong> <span class="tx-hash" onclick="copyToClipboard('${event.transactionHash}')">${event.transactionHash}</span></div>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        })
+                    );
+                    
+
+                    historyContent.innerHTML = txsHtml.join('');
+
+                } catch (error) {
+                    console.error('Error loading history:', error);
+                    historyContent.innerHTML = `<div class="error">❌ Lỗi: ${error.message}</div>`;
+                }
+            }
+
+            window.copyToClipboard = function(text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('✅ Đã copy: ' + text);
+                }).catch(err => {
+                    console.error('Copy error:', err);
+                    alert('❌ Không thể copy');
+                });
+            }
+
+            if (window.ethereum) {
+                window.ethereum.on('accountsChanged', (accounts) => {
+                    if (accounts.length > 0) {
+                        location.reload();
+                    }
+                });
+
+                window.ethereum.on('chainChanged', () => {
+                    location.reload();
+                });
+            }
+        });
+
+        // Re-approve function
+        window.reApprove = async function(address, name) {
+            const amount = prompt(`Nhập số lượng token muốn phê duyệt thêm cho ${name}:`, '1000');
+            if (!amount) return;
+            
+            try {
+                const amountWei = ethers.utils.parseEther(amount);
+                
+                // Lấy allowance hiện tại
+                const currentAllowance = await contract.allowance(currentAccount, address);
+                const newAllowance = currentAllowance.add(amountWei);
+                
+                const tx = await contract.approve(address, newAllowance);
+                alert('⏳ Đang xử lý...');
+                await tx.wait();
+                
+                // Cập nhật storage
+                const currentData = approvedAddresses[address];
+                const newTotal = parseFloat(ethers.utils.formatEther(newAllowance));
+                approvedAddresses[address] = {
+                    ...currentData,
+                    amount: newTotal.toString()
+                };
+                saveApprovedAddresses();
+                
+                alert('✅ Đã phê duyệt thêm thành công!');
+                displayApprovedList();
+            } catch (error) {
+                alert('❌ Lỗi: ' + error.message);
+            }
+        }
+
+        // Revoke approval function
+        window.revokeApproval = async function(address, name) {
+            if (!confirm(`Bạn có chắc muốn thu hồi phê duyệt cho ${name}?`)) return;
+            
+            try {
+                const tx = await contract.approve(address, 0);
+                alert('⏳ Đang xử lý...');
+                await tx.wait();
+                
+                delete approvedAddresses[address];
+                saveApprovedAddresses();
+                
+                alert('✅ Đã thu hồi phê duyệt!');
+                displayApprovedList();
+            } catch (error) {
+                alert('❌ Lỗi: ' + error.message);
+            }
+        }
+
+        // Thêm ghi chú cho transaction
+        window.addNote = function(txHash) {
+            try {
+                if (!currentAccount) {
+                    alert('❌ Vui lòng kết nối MetaMask trước!');
+                    return;
+                }
+                
+                const currentNote = txMetadata[txHash]?.note || '';
+                const note = prompt('Nhập ghi chú cho giao dịch này:', currentNote);
+                
+                if (note === null) return; // User cancelled
+                
+                if (!txMetadata[txHash]) {
+                    txMetadata[txHash] = { note: '', tags: [] };
+                }
+                
+                txMetadata[txHash].note = note.trim();
+                saveTxMetadata();
+                
+                // Refresh display
+                document.getElementById('searchBtn').click();
+                
+                if (note.trim()) {
+                    alert('✅ Đã lưu ghi chú!');
+                }
+            } catch (error) {
+                console.error('Add note error:', error);
+                alert('❌ Lỗi: ' + error.message);
+            }
+        }
+
+        // Thêm tag cho transaction
+        window.addTag = function(txHash) {
+            try {
+                if (!currentAccount) {
+                    alert('❌ Vui lòng kết nối MetaMask trước!');
+                    return;
+                }
+                
+                const tag = prompt('Nhập tag (VD: lương, tiền thuê, đầu tư):');
+                
+                if (!tag || tag.trim() === '') return;
+                
+                const cleanTag = tag.trim();
+                
+                if (!txMetadata[txHash]) {
+                    txMetadata[txHash] = { note: '', tags: [] };
+                }
+                
+                if (!txMetadata[txHash].tags.includes(cleanTag)) {
+                    txMetadata[txHash].tags.push(cleanTag);
+                    saveTxMetadata();
+                    
+                    // Refresh display
+                    document.getElementById('searchBtn').click();
+                    alert('✅ Đã thêm tag: ' + cleanTag);
+                } else {
+                    alert('⚠️ Tag này đã tồn tại!');
+                }
+            } catch (error) {
+                console.error('Add tag error:', error);
+                alert('❌ Lỗi: ' + error.message);
+            }
+        }
+
+        // Xóa metadata
+        window.deleteMetadata = function(txHash) {
+            try {
+                if (!currentAccount) {
+                    alert('❌ Vui lòng kết nối MetaMask trước!');
+                    return;
+                }
+                
+                if (!confirm('Xóa tất cả ghi chú và tag của giao dịch này?')) return;
+                
+                delete txMetadata[txHash];
+                saveTxMetadata();
+                
+                // Refresh display
+                document.getElementById('searchBtn').click();
+                alert('✅ Đã xóa metadata!');
+            } catch (error) {
+                console.error('Delete metadata error:', error);
+                alert('❌ Lỗi: ' + error.message);
+            }
+        }
+
+        // Filter by tag (thêm tính năng lọc)
+        window.filterByTag = function() {
+            try {
+                const tag = prompt('Nhập tag để lọc (để trống để hiện tất cả):');
+                
+                const allTx = document.querySelectorAll('.transaction');
+                
+                // If no tag provided, show all
+                if (!tag || tag.trim() === '') {
+                    allTx.forEach(tx => tx.style.display = 'block');
+                    return;
+                }
+                
+                // Filter by tag
+                allTx.forEach(tx => {
+                    const tags = tx.querySelector('.tx-tags');
+                    if (tags && tags.textContent.toLowerCase().includes('#' + tag.toLowerCase())) {
+                        tx.style.display = 'block';
+                    } else {
+                        tx.style.display = 'none';
+                    }
+                });
+            } catch (error) {
+                console.error('Filter error:', error);
+                alert('❌ Lỗi lọc: ' + error.message);
+            }
+        }
+
+        // Export history to CSV
+        window.exportHistory = async function() {
+            try {
+                // Check if connected
+                if (!currentAccount || !provider || !contract) {
+                    alert('❌ Vui lòng kết nối MetaMask trước!');
+                    return;
+                }
+                
+                const address = document.getElementById('searchAddress').value.trim() || currentAccount;
+                
+                if (!ethers.utils.isAddress(address)) {
+                    alert('❌ Địa chỉ không hợp lệ!');
+                    return;
+                }
+                
+                // Show loading message
+                const originalText = event.target?.textContent;
+                if (event.target) event.target.textContent = '⏳ Đang xuất...';
+                
+                const transferFilter = contract.filters.Transfer();
+                const events = await contract.queryFilter(transferFilter, 0, 'latest');
+                
+                const relevantTxs = events.filter(event => 
+                    event.args.from.toLowerCase() === address.toLowerCase() ||
+                    event.args.to.toLowerCase() === address.toLowerCase()
+                );
+                
+                if (relevantTxs.length === 0) {
+                    alert('⚠️ Không có giao dịch nào để xuất!');
+                    if (event.target) event.target.textContent = originalText;
+                    return;
+                }
+                
+                let csv = 'Thời gian,Loại,Từ,Đến,Số lượng (TMN),TX Hash,Ghi chú,Tags\n';
+                
+                for (const txEvent of relevantTxs) {
+                    const block = await provider.getBlock(txEvent.blockNumber);
+                    const date = new Date(block.timestamp * 1000).toLocaleString('vi-VN');
+                    const isSent = txEvent.args.from.toLowerCase() === address.toLowerCase();
+                    const type = isSent ? 'Gửi' : 'Nhận';
+                    const amount = ethers.utils.formatEther(txEvent.args.value);
+                    const metadata = txMetadata[txEvent.transactionHash] || { note: '', tags: [] };
+                    
+                    csv += `"${date}","${type}","${txEvent.args.from}","${txEvent.args.to}","${amount}","${txEvent.transactionHash}","${metadata.note}","${metadata.tags.join(', ')}"\n`;
+                }
+                
+                // Download CSV with UTF-8 BOM for Excel compatibility
+                const BOM = '\uFEFF';
+                const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `TMN_history_${address.substring(0, 8)}_${Date.now()}.csv`;
+                link.click();
+                
+                // Cleanup
+                URL.revokeObjectURL(link.href);
+                if (event.target) event.target.textContent = originalText;
+                
+                alert(`✅ Đã xuất ${relevantTxs.length} giao dịch thành công!`);
+            } catch (error) {
+                console.error('Export error:', error);
+                alert('❌ Lỗi xuất CSV: ' + error.message);
+            }
+        }
+
+    </script>
+</body>
+</html>
